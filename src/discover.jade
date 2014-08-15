@@ -1,0 +1,30 @@
+doctype html
+html
+head
+    meta(http-equiv="Content-Type", content="text/html; charset=utf-8")
+    script.
+        WEB_SOCKET_SWF_LOCATION = "WebSocketMain.swf";
+    script(src="/js/swfobject.js")
+    script(src="/js/web_socket.js")
+    script(src="/js/autobahn.min.js")
+    script(src="/js/angular.min.js")
+    body(ng-app="vanDiscoveryApp")
+        h1 Caravan devices
+        script(type="text/ng-template", id="device.html")
+            li(ng-controller="deviceController")
+                a(ng-if="device.hasChildren", href="", ng-click="showChildren()") {{device.name}}
+                span(ng-if="!device.hasChildren") {{device.name}}
+                span(ng-if="device.label") ({{device.label}})
+                span(ng-if="device.state != null") = {{device.state}} {{device.stateType}}
+                form(ng-if="device.hasCommands", ng-submit="call()", style="display: inline-block")
+                    select(ng-model="device.currentCommand", ng-options="command as command for (command, argTypes) in device.commands")
+                    ul(ng-repeat="argType in device.commands[device.currentCommand]", style="display: inline-block; padding-left: 0;")
+                        input(ng-if="argType.type == 'str'", ng-model="args[$index]")
+                        input(ng-if="argType.type == 'int' || argType.type == 'decimal'", ng-model="args[$index]", type="number")
+                        input(ng-if="argType.type == 'bool'", type="checkbox", ng-model="args[$index]")
+                        select(ng-if="argType.type == 'list'", ng-options="option for option in argType.list", ng-model="args[$index]")
+                    button(type="submit") call
+                ul(ng-repeat="device in children")
+                    li(ng-include="'device.html'")
+        ul(ng-repeat="device in modules")
+            li(ng-include="'device.html'")

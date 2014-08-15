@@ -1,0 +1,100 @@
+doctype html
+html
+    head
+        meta(
+            http-equiv="Content-Type"
+            content="text/html; charset=utf-8" )
+        meta(
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" )
+        meta(name="apple-mobile-web-app-capable" content="yes")
+        link(rel="stylesheet" href="/main.css")
+        script.
+            WEB_SOCKET_SWF_LOCATION = "/deps/WebSocketMain.swf";
+        //- deps:css
+        //- endinject
+        //- deps:js
+        //- endinject
+        //- app:js
+        //- endinject
+        //script(src="lib.js")
+        //script(src="app.js")
+    body(ng-app="devicesApp")
+        script(type="text/ng-template" id="device.html")
+            .well
+                h3(data-block="title")
+                    span(data-block="type")
+                    small(data-block="room") {{ room }}
+                .btn-group.btn-group-justified(data-block="buttons")
+                    .btn.btn-lg(
+                        ng-class="{ 'btn-default': device.state == 0, 'btn-primary': device.state > 0 }"
+                        ng-click="device.call('turnOff')" ) Выключить
+                    .btn.btn-lg(
+                        ng-class="{ 'btn-default': device.state > 0, 'btn-primary': device.state == 0 }"
+                        ng-click="device.call('turnOn')" ) Включить
+        script(type="text/ng-template" id="curtains.html")
+            div(extend-template="device.html")
+                span(data-block="type") Шторы
+                div(data-block-before="buttons")
+                    input(
+                        type="range"
+                        min="0"
+                        max="99"
+                        ng-model="device.state"
+                        ng-model-options="{ updateOn: 'mouseup' }"
+                        ng-change="device.call('set', device.state)" )
+                .btn-group.btn-group-justified(data-block="buttons")
+                    .btn.btn-lg(
+                        ng-class="{ 'btn-default': device.state == 0, 'btn-primary': device.state > 0 }"
+                        ng-click="device.call('open')" ) Открыть
+                    .btn.btn-lg(
+                        ng-class="{ 'btn-default': device.state == 99, 'btn-primary': device.state < 99 }"
+                        ng-click="device.call('close')" ) Закрыть
+        script(type="text/ng-template" id="light.html")
+            div(extend-template="device.html")
+                span(data-block="type") Свет
+                div(data-block-before="buttons")
+                    input(
+                        type="range"
+                        min="0"
+                        max="99"
+                        ng-model="device.state"
+                        ng-model-options="{ updateOn: 'mouseup touchend' }"
+                        ng-change="device.call('set', device.state)" )
+                .btn-group.btn-group-justified(data-block="buttons")
+                    .btn.btn-lg(
+                        ng-class="{ 'btn-default': device.state == 0, 'btn-primary': device.state > 0 }"
+                        ng-click="device.call('turnOff')" ) Выключить
+                    .btn.btn-lg(
+                        ng-class="{ 'btn-default': device.state > 0, 'btn-primary': device.state == 0 }"
+                        ng-click="device.call('turnOn')" ) Включить
+        script(type="text/ng-template" id="security.html")
+            .modal-backdrop.in(ng-if="security.state == 'armed'")
+            .modal.fade.show.in(ng-if="security.state == 'armed'")
+                .modal-dialog.modal-sm
+                    .modal-content
+                        .modal-header
+                            .h4(class="modal-title") Сигнализация
+                        .modal-body
+                            .p Введите код для отключения сигнализации:
+                            .center-block(style="width: 143px; margin-top: 20px; margin-bottom: 20px;")
+                                input.form-control.input-lg(type="password" disabled ng-model="code" ng-init="code = '1234'")
+                                button.btn.btn-default.btn-lg(ng-click="code = code + '1'") 1
+                                button.btn.btn-default.btn-lg(ng-click="code = code + '2'") 2
+                                button.btn.btn-default.btn-lg(ng-click="code = code + '3'") 3
+                                button.btn.btn-default.btn-lg(ng-click="code = code + '4'") 4
+                                button.btn.btn-default.btn-lg(ng-click="code = code + '5'") 5
+                                button.btn.btn-default.btn-lg(ng-click="code = code + '6'") 6
+                                button.btn.btn-default.btn-lg(ng-click="code = code + '7'") 7
+                                button.btn.btn-default.btn-lg(ng-click="code = code + '8'") 8
+                                button.btn.btn-default.btn-lg(ng-click="code = code + '9'") 9
+            div(extend-template="device.html")
+                span(data-block="type") Сигнализация
+                .btn-group.btn-group-justified(data-block="buttons")
+                    .btn.btn-lg.btn-primary(
+                        ng-click="security.state = 'armed'" ) Включить
+        ng-include.deviceController(src="'curtains.html'" device-name="bigroom.curtains" ng-controller="deviceController as device")
+        ng-include.deviceController(src="'light.html'" device-name="light.bigroom" ng-controller="deviceController as device")
+        ng-include.deviceController(src="'light.html'" device-name="light.bigroom" ng-controller="deviceController as device")
+        ng-include.deviceController(src="'light.html'" device-name="light.bigroom" ng-controller="deviceController as device")
+        ng-include.deviceController(src="'security.html'" device-name="security" ng-controller="deviceController as security")

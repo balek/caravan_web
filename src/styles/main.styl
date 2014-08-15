@@ -1,0 +1,33 @@
+@import "bootstrap-stylus/stylus/bootstrap.styl"
+
+body
+    container-fixed()
+    max-width container-lg
+
+input[type=range]::-moz-range-track
+    width 100%
+
+input[type=range]::-moz-range-thumb
+    background btn-primary-bg
+
+input[type=range]
+    margin-bottom 7px
+    margin-top 15px
+
+h3, .h3
+    margin-top 5px
+
+.deviceController
+     @extends .col-sm-6
+     @extends .col-md-4
+     padding-left 5px
+     padding-right 5px
+    .well
+        margin-bottom 10px
+button
+    margin-top 3px
+
+.input-lg
+    font-size 36px
+    padding-top 0
+    padding-bottom 0
